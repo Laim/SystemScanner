@@ -1,18 +1,16 @@
 ﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 namespace CrossPlatformConsole.Architecture.Linux
 {
+    [SupportedOSPlatform("linux")]
     public class Scanner
     {
-
         private TextWriter DEBUG_STREAM_WRITER = new StreamWriter("LINUX_SCANNER_DEBUG.OUTPUT", true);
 
-        public void GetSystemInfo_Linux()
+        internal void GetSystemInfo()
         {
             ShellCommand lc = new ShellCommand();
-
-            var os = Environment.OSVersion;
 
             Console.WriteLine($"    Machine Name       :    {Environment.MachineName}");
             Console.WriteLine($"    Operating System   :    {lc.RunShell(". /etc/os-release; echo \"$PRETTY_NAME\"")}");
@@ -38,7 +36,7 @@ namespace CrossPlatformConsole.Architecture.Linux
 
         }
 
-        public void GetSoftware_Linux()
+        internal void GetSoftware()
         {
             string[] excludeFiles = { "kbuild", "makefile", ".config", ".gitignore", "kconfig", "readme", "copyright" };
             string[] excludePaths = { @"\zoneinfo\" };
@@ -46,10 +44,7 @@ namespace CrossPlatformConsole.Architecture.Linux
 
             string? rootPath = null;
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                rootPath = @"/usr/";
-            }
+            rootPath = @"/usr/";
 
             if (rootPath != null)
             {

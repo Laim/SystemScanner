@@ -4,7 +4,7 @@ namespace CrossPlatformConsole.Architecture.Linux
 {
     public class ShellCommand
     {
-        public string RunShell(string cmd)
+        internal string RunShell(string cmd)
         {
 
             var process = new Process()
