@@ -1,4 +1,6 @@
-﻿using System.Management;
+﻿using CrossPlatformConsole.FileGenerator;
+using System.Diagnostics;
+using System.Management;
 using System.Runtime.Versioning;
 
 namespace CrossPlatformConsole.Architecture.Windows
@@ -6,7 +8,7 @@ namespace CrossPlatformConsole.Architecture.Windows
     [SupportedOSPlatform("windows")]
     public class Scanner
     {
-        private TextWriter DEBUG_STREAM_WRITER = new StreamWriter("WINDOWS_SCANNER_DEBUG.OUTPUT", true);
+        private TextWriter DEBUG_STREAM_WRITER = new StreamWriter(@"output\WINDOWS_SCANNER_DEBUG.OUTPUT", true);
 
         // This code is from Microsoft Documentation
         // and is not final, it's just a PoC 
@@ -34,6 +36,8 @@ namespace CrossPlatformConsole.Architecture.Windows
         {
             // Start with drives if you have to search the entire computer.
             string[] drives = Environment.GetLogicalDrives();
+
+            new WriteToXml();
 
             foreach (string dr in drives)
             {
@@ -88,6 +92,7 @@ namespace CrossPlatformConsole.Architecture.Windows
                     {
                         Console.WriteLine(fi.FullName);
                         DEBUG_STREAM_WRITER.WriteLine(fi.FullName);
+                        GetExecutableVersion(fi.FullName);
                     }
                 }
 
@@ -117,6 +122,27 @@ namespace CrossPlatformConsole.Architecture.Windows
             {
                 return name.ToString();
             }
+        }
+
+        private void GetExecutableVersion(string path)
+        {
+            var versionInfo = FileVersionInfo.GetVersionInfo(path);
+
+            
+
+            Console.WriteLine(versionInfo.FileVersion);
+            Console.WriteLine(versionInfo.ProductVersion);
+            Console.WriteLine(versionInfo.CompanyName);
+            Console.WriteLine(versionInfo.Language);
+            Console.WriteLine(versionInfo.ProductName);
+
+            WriteToXml.instance.Write(versionInfo.ProductName, path, versionInfo.FileVersion, versionInfo.CompanyName);
+
+            DEBUG_STREAM_WRITER.WriteLine(versionInfo.FileVersion);
+            DEBUG_STREAM_WRITER.WriteLine(versionInfo.ProductVersion);
+            DEBUG_STREAM_WRITER.WriteLine(versionInfo.CompanyName);
+            DEBUG_STREAM_WRITER.WriteLine(versionInfo.Language);
+            DEBUG_STREAM_WRITER.WriteLine(versionInfo.ProductName);
         }
     }
 }
